@@ -1,10 +1,29 @@
 [
   {
+    "name": "pepe",
+    "description": "...",
+    "code": "1",
+    "price": "1100",
+    "stock": "1",
     "id": 1,
-    "timestamp": 1662066868371
+    "timestamp": 1662125143565
   },
   {
+    "name": "pepa",
+    "description": "...",
+    "code": "1",
+    "price": "11000",
+    "stock": "1",
     "id": 2,
-    "timestamp": 1662066941684
+    "timestamp": 1662125170881
+  },
+  {
+    "name": "pepo",
+    "description": "...",
+    "code": "1",
+    "price": "11000",
+    "stock": "1",
+    "id": 3,
+    "timestamp": 1662125185406
   }
 ]

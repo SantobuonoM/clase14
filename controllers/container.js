@@ -1,7 +1,7 @@
 
 
 import fs from 'fs';
-import  products  from './controllerProducts.js';
+import   productsController   from './controllerProducts.js';
 export default class Container {
     constructor(fileName) {
         this.fileName = fileName;
@@ -21,6 +21,7 @@ export default class Container {
         try {
             obj.id = await this.generateId();
             obj.timestamp = Date.now();
+            
             this.objects.push(obj);
             this.writeData();
             return obj.id;
@@ -31,7 +32,7 @@ export default class Container {
                         ////////// Trae el objeto con el id seleccionado //////////
     getById(id) {
         try {
-            const obj = this.objects.find(el => el.id === id);
+            const obj = this.objects.find(el => el.id == id);
             return obj ? obj : null;
         } catch (err) {
             console.log(err);
@@ -82,17 +83,18 @@ export default class Container {
     async writeData() {
         await fs.promises.writeFile(this.fileName, JSON.stringify(this.objects, null, 2));
     }
-    saveProduct(idCarrito, idProduct) {
+    async saveProduct(idCarrito, idProduct)  {
         try {
             const carrito = this.getById(idCarrito);
             if (carrito == null) return;
-            const productSelected = products.getById(idProduct);
+            const productSelected = productsController.products.getById(idProduct);
             if (productSelected == null) return;
             carrito.products.push(productSelected);
-            this.writeData();
+            await this.writeData();
             return 'Product agregado!';
         } catch (err) {
             console.log(err);
+            return 'Error al agregar producto'
         }
     }
     deleteProduct(idCarrito, idProduct) {

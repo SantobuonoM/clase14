@@ -1,6 +1,6 @@
 import Container from '../controllers/container.js';
 
-const products = new Container('./data/products.json');
+let products = new Container('./data/products.json');
 
                         ////////////// Lista todos los productos ////////////////////
 const getProducts = (req, res) => {
@@ -12,9 +12,9 @@ const getProducts = (req, res) => {
 }
 
                                 ////////Agrega Producto/////////////////
-const addProduct = (req, res) => {
+const addProduct = async (req, res) => {
 	const { name, description, code, pic, price, stock } = req.body;
-	products.save({ name, description, code, pic, price, stock });
+	await products.save({ name, description, code, pic, price, stock });
 	res.json({ message: 'Producto agregado' });
 }
 
@@ -38,4 +38,4 @@ const deleteProduct = (req, res) => {
 
                                     ////////// Exporta los controladores /////////////
 
-export { products, getProducts, addProduct, updateProduct, deleteProduct };
+export default {products, getProducts, addProduct, updateProduct, deleteProduct} ;
