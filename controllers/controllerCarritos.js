@@ -1,7 +1,7 @@
 import Container from "./container.js";
+import productsController from "./controllerProducts.js";
 
-let administrador;
-const carrito = new Container("./data/carritos.json");
+const carritos = new Container("./data/carritos.json");
 
 ////////Agrega Carrito/////////////////
 
@@ -9,7 +9,7 @@ const addCarrito = async (req, res) => {
   const { name, description } = req.body;
   //if (!products) return carrito.save([]);
 
-  await carrito.save({name, description, products:[]});
+  await carritos.save({ name, description, products: [] });
   res.json({ message: "Carrito agregado" });
 };
 /////////////  Borra un  producto ///////////////////
@@ -20,7 +20,7 @@ const deleteCarrito = (req, res) => {
     return res
       .status(400)
       .send({ message: "Ingresa el ID de un carrito listado" });
-  const carritoDeleted = carrito.deleteById(id);
+  const carritoDeleted = carritos.deleteById(id);
   if (carritoDeleted === -1)
     return res
       .status(404)
@@ -36,7 +36,7 @@ const getProducts = (req, res) => {
     return res
       .status(400)
       .send({ message: "Ingresa el ID de un carrito listado" });
-  const carritoSelected = carrito.getById(id);
+  const carritoSelected = carritos.getById(id);
   if (carritoSelected == null)
     return res
       .status(404)
@@ -53,7 +53,7 @@ const addProductToCarrito = async (req, res) => {
       .status(400)
       .send({ message: "Ingresa el ID de un carrito listado" });
   const { idProduct } = req.body;
-  const productSaved = await carrito.saveProduct(idCarrito, idProduct);
+  const productSaved = await saveProduct(idCarrito, idProduct);
   if (!productSaved) return res.status(404).send({ message: "Error" });
   res.json({ message: productSaved });
 };
@@ -67,12 +67,40 @@ const deleteProduct = (req, res) => {
     return res
       .status(400)
       .send({ message: "Ingresa el ID de un carrito listado" });
-  const productDeleted = carrito.deleteProduct(id, id_prod);
+  const productDeleted = deleteOneProduct(id, id_prod);
   if (productDeleted == -1 || !productDeleted)
     return res.status(404).send({ message: "Error" });
   res.json({ message: "Producto eliminado" });
 };
-
+const saveProduct = async (idCarrito, idProduct) => {
+  try {
+    const carrito = carritos.getById(idCarrito);
+    if (carrito == null) return;
+    const productSelected = productsController.products.getById(idProduct);
+    if (productSelected == null) return;
+    carrito.products.push(productSelected);
+    await carritos.writeData();
+    return "Product agregado!";
+  } catch (err) {
+    console.log(err);
+    return "Error al agregar producto";
+  }
+};
+const deleteOneProduct = (idCarrito, idProduct) => {
+  try {
+    const carrito = carritos.getById(idCarrito);
+    if (carrito == null) return;
+    const productToDelete = carrito.products.findIndex(
+      (product) => product.id === idProduct
+    );
+    if (productToDelete == -1) return;
+    carrito.products.splice(productToDelete, 1);
+    carritos.writeData();
+    return "Producto eliminado!";
+  } catch (error) {
+    console.log(error);
+  }
+};
 export {
   addCarrito,
   deleteCarrito,
